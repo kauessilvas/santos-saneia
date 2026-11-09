@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prefeitura | Relatório</title>
+  <link rel="stylesheet" th:href="@{/css/site.css}">
 </head>
 <body>
-
+  <header class="site-header"><div class="header-inner">
+      <a class="brand" th:href="@{/prefeitura}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Prefeitura de Santos</strong><small>Meio Ambiente</small></span></a>
+      <nav aria-label="Navegação principal"><a th:href="@{/prefeitura}">Painel</a><a th:href="@{/prefeitura/chamados}">Chamados</a><a th:href="@{/prefeitura/relatorios}" aria-current="page">Relatório</a><form th:action="@{/logout}" method="post"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><button type="submit">Sair</button></form></nav>
+    </div></header>
+  <main>
+    <div class="page-heading page-heading-row"><div><p class="eyebrow">Prefeitura de Santos · Meio Ambiente</p><h1>Resumo de atendimentos</h1><p class="lead">Distribuição dos chamados conforme o status informado pela Sabesp.</p></div><a class="button-secondary" th:href="@{/prefeitura/chamados}">Explorar chamados →</a></div>
+    <section class="panel"><div class="panel-header"><h2>Panorama geral</h2></div><p class="report-total"><span>Total de chamados registrados</span><strong th:text="${total}">0</strong></p></section>
+    <div class="stat-grid four"><section class="stat-card" th:each="s : ${statuses}"><span th:text="${#strings.replace(s.name(), '_', ' ')}">Status</span><strong th:text="${contagem[s]}">0</strong></section></div>
+    <div class="info-strip">Os números são atualizados conforme os chamados são registrados e atendidos.</div>
+  </main>
+  <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
 </body>
 </html>

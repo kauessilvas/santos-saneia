@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registrar chamado | Santos</title>
+  <link rel="stylesheet" th:href="@{/css/site.css}">
 </head>
 <body>
-
+  <header class="site-header"><div class="header-inner">
+      <a class="brand" th:href="@{/cidadao/cadastro}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Secretaria de Meio Ambiente</strong><small>Prefeitura de Santos</small></span></a>
+      <nav aria-label="Navegação principal"><a th:href="@{/cidadao/cadastro}" aria-current="page">Novo chamado</a><a th:href="@{/login}" class="nav-action">Acesso institucional</a></nav>
+    </div></header>
+  <main>
+    <div class="page-heading">
+      <p class="eyebrow">Atendimento ao cidadão</p>
+      <h1>Informar problema de esgoto</h1>
+      <p class="lead">Ajude a identificar ocorrências em Santos. Preencha os dados abaixo e acompanhe o atendimento pelo número do chamado.</p>
+    </div>
+    <form class="panel" th:action="@{/cidadao/chamados}" method="post" enctype="multipart/form-data">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+      <div class="panel-header"><h2>Dados da ocorrência</h2><p class="panel-note">Campos obrigatórios</p></div>
+      <div class="form-grid">
+        <div class="form-field span-all"><label for="endereco">Endereço completo em Santos</label><input id="endereco" name="endereco" maxlength="160" required placeholder="Rua, número e complemento"></div>
+        <div class="form-field"><label for="bairro">Bairro</label><input id="bairro" name="bairro" maxlength="80" required placeholder="Ex.: Gonzaga"></div>
+        <div class="form-field"><label for="tipo">Tipo de problema</label><select id="tipo" name="tipo" required><option value="">Selecione o problema</option><option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${#strings.replace(tipo.name(), '_', ' ')}"></option></select></div>
+        <div class="form-field"><label for="dataOcorrencia">Data da ocorrência</label><input id="dataOcorrencia" name="dataOcorrencia" type="date" th:min="${dataMinima}" th:max="${dataMaxima}" required><small class="field-hint" th:text="|De ${#temporals.format(dataMinima, 'dd/MM/yyyy')} até ${#temporals.format(dataMaxima, 'dd/MM/yyyy')}|">Últimos cinco anos</small></div>
+        <div class="form-field"><label for="horaOcorrencia">Hora da ocorrência</label><input id="horaOcorrencia" name="horaOcorrencia" type="time" required></div>
+        <div class="form-field span-all"><label for="imagem">Imagem da ocorrência <span class="muted">(opcional)</span></label><input id="imagem" name="imagem" type="file" accept="image/jpeg,image/png,image/webp"><small class="field-hint">JPEG, PNG ou WebP de até 5 MB.</small></div>
+      </div>
+      <div class="form-actions"><button class="button" type="submit">Registrar chamado</button></div>
+    </form>
+    <div class="info-strip">Após o registro, guarde o número e o link do chamado para acompanhar as atualizações.</div>
+  </main>
+  <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
 </body>
 </html>

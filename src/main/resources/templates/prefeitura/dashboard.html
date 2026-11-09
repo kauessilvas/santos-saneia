@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prefeitura | Painel</title>
+  <link rel="stylesheet" th:href="@{/css/site.css}">
 </head>
 <body>
-
+  <header class="site-header"><div class="header-inner">
+      <a class="brand" th:href="@{/prefeitura}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Prefeitura de Santos</strong><small>Meio Ambiente</small></span></a>
+      <nav aria-label="Navegação principal"><a th:href="@{/prefeitura}" aria-current="page">Painel</a><a th:href="@{/prefeitura/chamados}">Chamados</a><a th:href="@{/prefeitura/relatorios}">Relatório</a><form th:action="@{/logout}" method="post"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><button type="submit">Sair</button></form></nav>
+    </div></header>
+  <main>
+    <div class="page-heading page-heading-row"><div><p class="eyebrow">Prefeitura de Santos · Meio Ambiente</p><h1>Visão geral dos chamados</h1><p class="lead">Acompanhe o volume e o andamento das ocorrências de esgoto na cidade.</p></div><a class="button-secondary" th:href="@{/prefeitura/chamados}">Ver filtros →</a></div>
+    <div class="stat-grid"><section class="stat-card"><span>Total de chamados</span><strong th:text="${total}">0</strong></section><section class="stat-card warning"><span>Abertos</span><strong th:text="${abertos}">0</strong></section><section class="stat-card success"><span>Resolvidos</span><strong th:text="${resolvidos}">0</strong></section></div>
+    <section class="panel"><div class="panel-header"><h2>Chamados recentes</h2><a class="table-link" th:href="@{/prefeitura/chamados}">Ver todos →</a></div><div class="table-wrap"><table><thead><tr><th>Nº</th><th>Endereço</th><th>Tipo</th><th>Status</th><th></th></tr></thead><tbody><tr th:each="c : ${chamados}"><td class="ticket-id" th:text="|#${c.id}|"></td><td th:text="|${c.endereco}, ${c.bairro}|"></td><td th:text="${#strings.replace(c.tipo.name(), '_', ' ')}"></td><td><span class="badge" th:classappend="${'status-' + #strings.toLowerCase(c.status.name())}" th:text="${#strings.replace(c.status.name(), '_', ' ')}"></span></td><td><a class="table-link" th:href="@{/cidadao/consulta/{id}(id=${c.id})}">Ver detalhes →</a></td></tr><tr class="empty-row" th:if="${#lists.isEmpty(chamados)}"><td colspan="5">Nenhum chamado registrado até o momento.</td></tr></tbody></table></div></section>
+  </main>
+  <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
 </body>
 </html>

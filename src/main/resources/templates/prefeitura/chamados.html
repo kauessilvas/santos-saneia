@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prefeitura | Filtrar chamados</title>
+  <link rel="stylesheet" th:href="@{/css/site.css}">
 </head>
 <body>
-
+  <header class="site-header"><div class="header-inner">
+      <a class="brand" th:href="@{/prefeitura}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Prefeitura de Santos</strong><small>Meio Ambiente</small></span></a>
+      <nav aria-label="Navegação principal"><a th:href="@{/prefeitura}">Painel</a><a th:href="@{/prefeitura/chamados}" aria-current="page">Chamados</a><a th:href="@{/prefeitura/relatorios}">Relatório</a><form th:action="@{/logout}" method="post"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><button type="submit">Sair</button></form></nav>
+    </div></header>
+  <main>
+    <div class="page-heading"><p class="eyebrow">Prefeitura de Santos · Meio Ambiente</p><h1>Consultar chamados</h1><p class="lead">Filtre ocorrências por status, tipo, bairro ou período para acompanhar os atendimentos.</p></div>
+    <form class="panel" th:action="@{/prefeitura/chamados}" method="get"><div class="panel-header"><h2>Filtros</h2></div><div class="form-grid">
+      <div class="form-field"><label for="status">Status</label><select id="status" name="status"><option value="">Todos os status</option><option th:each="s : ${statuses}" th:value="${s}" th:selected="${s == chamadoFiltroDTO.status}" th:text="${#strings.replace(s.name(), '_', ' ')}"></option></select></div>
+      <div class="form-field"><label for="tipo">Tipo</label><select id="tipo" name="tipo"><option value="">Todos os tipos</option><option th:each="t : ${tipos}" th:value="${t}" th:selected="${t == chamadoFiltroDTO.tipo}" th:text="${#strings.replace(t.name(), '_', ' ')}"></option></select></div>
+      <div class="form-field"><label for="bairro">Bairro</label><input id="bairro" name="bairro" th:value="${chamadoFiltroDTO.bairro}" placeholder="Digite um bairro"></div>
+      <div class="form-field"><label for="inicio">Data inicial</label><input id="inicio" name="inicio" type="date" th:value="${chamadoFiltroDTO.inicio}"></div>
+      <div class="form-field"><label for="fim">Data final</label><input id="fim" name="fim" type="date" th:value="${chamadoFiltroDTO.fim}"></div>
+      </div><div class="form-actions"><button class="button" type="submit">Aplicar filtros</button><a class="button-secondary" th:href="@{/prefeitura/chamados}">Limpar</a></div></form>
+    <section class="panel"><div class="panel-header"><h2>Resultados</h2><p class="panel-note" th:text="|${#lists.size(chamados)} chamado(s)|"></p></div><div class="table-wrap"><table><thead><tr><th>Nº</th><th>Endereço</th><th>Tipo</th><th>Ocorrência</th><th>Status</th><th></th></tr></thead><tbody><tr th:each="c : ${chamados}"><td class="ticket-id" th:text="|#${c.id}|"></td><td th:text="|${c.endereco}, ${c.bairro}|"></td><td th:text="${#strings.replace(c.tipo.name(), '_', ' ')}"></td><td th:text="${#temporals.format(c.dataOcorrencia, 'dd/MM/yyyy')}"></td><td><span class="badge" th:classappend="${'status-' + #strings.toLowerCase(c.status.name())}" th:text="${#strings.replace(c.status.name(), '_', ' ')}"></span></td><td><a class="table-link" th:href="@{/cidadao/consulta/{id}(id=${c.id})}">Ver →</a></td></tr><tr class="empty-row" th:if="${#lists.isEmpty(chamados)}"><td colspan="6">Nenhum chamado corresponde aos filtros aplicados.</td></tr></tbody></table></div></section>
+  </main>
+  <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
 </body>
 </html>

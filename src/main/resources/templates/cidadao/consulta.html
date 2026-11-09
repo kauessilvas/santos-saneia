@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acompanhar chamado | Santos</title>
+  <link rel="stylesheet" th:href="@{/css/site.css}">
 </head>
 <body>
-
+  <header class="site-header"><div class="header-inner">
+      <a class="brand" th:href="@{/cidadao/cadastro}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Secretaria de Meio Ambiente</strong><small>Prefeitura de Santos</small></span></a>
+      <nav aria-label="Navegação principal"><a th:href="@{/cidadao/cadastro}">Novo chamado</a><a th:href="@{/login}" class="nav-action">Acesso institucional</a></nav>
+    </div></header>
+  <main>
+    <div class="page-heading page-heading-row">
+      <div><p class="eyebrow">Acompanhamento</p><h1 th:text="|Chamado #${chamado.id}|">Chamado</h1><p class="lead">Veja os dados registrados e as atualizações do atendimento.</p></div>
+      <span class="badge" th:classappend="${'status-' + #strings.toLowerCase(chamado.status.name())}" th:text="${#strings.replace(chamado.status.name(), '_', ' ')}">Status</span>
+    </div>
+    <section class="panel"><div class="panel-header"><h2>Dados da ocorrência</h2></div>
+      <dl class="detail-grid">
+        <div class="detail-item full"><dt>Endereço</dt><dd th:text="|${chamado.endereco}, ${chamado.bairro}|"></dd></div>
+        <div class="detail-item"><dt>Tipo de problema</dt><dd th:text="${#strings.replace(chamado.tipo.name(), '_', ' ')}"></dd></div>
+        <div class="detail-item"><dt>Data e hora</dt><dd th:text="|${#temporals.format(chamado.dataOcorrencia, 'dd/MM/yyyy')} às ${#temporals.format(chamado.horaOcorrencia, 'HH:mm')}|"></dd></div>
+      </dl>
+      <img class="foto" th:if="${temImagem}" th:src="@{/chamados/{id}/imagem(id=${chamado.id})}" alt="Imagem enviada no chamado">
+    </section>
+    <div class="split"><section class="panel"><h2>Andamento</h2><ol class="timeline"><li th:each="item : ${historico}" th:text="|${#temporals.format(item.criadoEm, 'dd/MM/yyyy HH:mm')} · ${#strings.replace(item.status.name(), '_', ' ')}|"></li></ol></section>
+      <section class="panel"><h2>Comentários da Sabesp</h2><p class="muted" th:if="${#lists.isEmpty(comentarios)}">Ainda não há comentários.</p><article class="comment" th:each="item : ${comentarios}"><time th:text="${#temporals.format(item.criadoEm, 'dd/MM/yyyy HH:mm')}"></time><p th:text="${item.texto}"></p></article></section></div>
+    <a class="button-secondary" th:href="@{/cidadao/cadastro}">Registrar outro chamado</a>
+  </main>
+  <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
 </body>
 </html>

@@ -1,10 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acesso institucional | Santos</title>
+  <link rel="stylesheet" th:href="@{/css/site.css}">
 </head>
 <body>
-
+  <header class="site-header"><div class="header-inner">
+      <a class="brand" th:href="@{/cidadao/cadastro}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Secretaria de Meio Ambiente</strong><small>Prefeitura de Santos</small></span></a>
+      <nav aria-label="Navegação principal"><a th:href="@{/cidadao/cadastro}">Novo chamado</a><a th:href="@{/login}" aria-current="page" class="nav-action">Acesso institucional</a></nav>
+    </div></header>
+  <main>
+    <div class="login-layout">
+      <div class="page-heading"><p class="eyebrow">Área institucional</p><h1>Bem-vindo de volta</h1><p class="lead">Acesse os chamados com seu perfil da Sabesp ou da Prefeitura.</p></div>
+      <form class="panel" th:action="@{/login}" method="post">
+        <p class="notice-error" th:if="${param.error}" role="alert">Usuário ou senha inválidos.</p>
+        <p class="info-strip" th:if="${param.logout}">Sessão encerrada.</p>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <div class="form-field"><label for="username">Usuário</label><input id="username" name="username" autocomplete="username" required></div>
+        <div class="form-field" style="margin-top:1rem"><label for="password">Senha</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
+        <div class="form-actions"><button class="button" type="submit">Entrar</button></div>
+      </form>
+      <p class="muted">Precisa registrar uma ocorrência? <a th:href="@{/cidadao/cadastro}">Acesse o formulário público</a>.</p>
+    </div>
+  </main>
+  <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
 </body>
 </html>
