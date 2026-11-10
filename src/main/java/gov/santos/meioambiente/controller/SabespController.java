@@ -24,7 +24,7 @@ public class SabespController {
         model.addAttribute("chamado", service.buscar(id));
         model.addAttribute("comentarios", service.comentarios(id));
         model.addAttribute("historico", service.historico(id));
-        model.addAttribute("temImagem", service.temImagem(id));
+        model.addAttribute("imagens", service.imagens(id));
         model.addAttribute("statuses", StatusChamado.values());
         return "sabesp/detalhes";
     }

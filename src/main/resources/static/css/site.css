@@ -199,7 +199,15 @@ td:last-child, th:last-child { padding-right: 1rem; }
 .detail-item dt { color: #71858a; font-size: .76rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .detail-item dd { margin: .35rem 0 0; color: #24474c; font-size: .95rem; font-weight: 600; }
 .detail-item.full { grid-column: 1 / -1; }
-.foto { display: block; max-width: 100%; max-height: 440px; margin-top: 1rem; border: 1px solid #dce8e3; border-radius: 10px; }
+.image-section { margin-top: 1.6rem; padding-top: 1.4rem; border-top: 1px solid #e5eeea; }
+.image-section h3 { margin: 0 0 .9rem; color: #315257; font-size: .9rem; }
+.image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; }
+.image-tile { overflow: hidden; margin: 0; border: 1px solid #dce8e3; border-radius: 11px; background: #f8fbf9; }
+.image-tile a { display: block; color: #086b69; text-decoration: none; }
+.image-tile img { display: block; width: 100%; height: 190px; padding: .5rem; background: #edf4f1; object-fit: contain; }
+.image-tile a span { display: block; padding: .5rem .7rem 0; font-size: .78rem; font-weight: 700; }
+.image-tile a:hover span { text-decoration: underline; }
+.image-tile figcaption { padding: .35rem .7rem .7rem; color: #71858a; font-size: .75rem; }
 .timeline { margin: 0; padding: 0 0 0 1rem; list-style: none; border-left: 2px solid #dce9e4; }
 .timeline li { position: relative; padding: 0 0 1rem 1.2rem; color: #315257; font-size: .9rem; }
 .timeline li:last-child { padding-bottom: 0; }

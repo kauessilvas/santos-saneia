@@ -27,8 +27,8 @@ public class ChamadoController {
     @PostMapping("/cidadao/chamados")
     String criar(@RequestParam String endereco, @RequestParam String bairro, @RequestParam TipoProblema tipo,
                  @RequestParam LocalDate dataOcorrencia, @RequestParam LocalTime horaOcorrencia,
-                 @RequestParam(required = false) MultipartFile imagem) throws IOException {
-        return "redirect:/cidadao/consulta/" + service.criar(endereco, bairro, tipo, dataOcorrencia, horaOcorrencia, imagem).getId();
+                 @RequestParam(required = false) MultipartFile[] imagens) throws IOException {
+        return "redirect:/cidadao/consulta/" + service.criar(endereco, bairro, tipo, dataOcorrencia, horaOcorrencia, imagens).getId();
     }
 
     @GetMapping("/cidadao/consulta/{id}")
@@ -36,13 +36,22 @@ public class ChamadoController {
         model.addAttribute("chamado", service.buscar(id));
         model.addAttribute("comentarios", service.comentarios(id));
         model.addAttribute("historico", service.historico(id));
-        model.addAttribute("temImagem", service.temImagem(id));
+        model.addAttribute("imagens", service.imagens(id));
         return "cidadao/consulta";
     }
 
+    @GetMapping("/chamados/{id}/imagens/{imagemId}")
+    ResponseEntity<byte[]> imagem(@PathVariable Long id, @PathVariable Long imagemId) {
+        return respostaImagem(service.imagem(id, imagemId));
+    }
+
+    // Mantém links antigos para a primeira imagem do chamado.
     @GetMapping("/chamados/{id}/imagem")
-    ResponseEntity<byte[]> imagem(@PathVariable Long id) {
-        var anexo = service.imagem(id);
+    ResponseEntity<byte[]> primeiraImagem(@PathVariable Long id) {
+        return respostaImagem(service.primeiraImagem(id));
+    }
+
+    private ResponseEntity<byte[]> respostaImagem(gov.santos.meioambiente.model.Anexo anexo) {
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(anexo.getTipoConteudo()))
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline").body(anexo.getDados());
     }

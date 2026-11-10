@@ -9,7 +9,7 @@ import lombok.Setter;
 public class Anexo {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Chamado chamado;
     @Column(nullable = false)
     private String tipoConteudo;

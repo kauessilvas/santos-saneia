@@ -22,11 +22,15 @@ class SiteApplicationTests {
     @Test
     void registraAtualizaEFiltraChamado() throws Exception {
         byte[] imagem = new byte[] {1, 2, 3};
-        var arquivo = new MockMultipartFile("imagem", "foto.png", "image/png", imagem);
+        var arquivo = new MockMultipartFile("imagens", "foto.png", "image/png", imagem);
+        var segundaImagem = new MockMultipartFile("imagens", "foto2.jpg", "image/jpeg", new byte[] {4, 5});
         var chamado = service.criar("Rua Teste, 10", "Centro", TipoProblema.VAZAMENTO,
-            LocalDate.now(), LocalTime.of(12, 30), arquivo);
+            LocalDate.now(), LocalTime.of(12, 30), new MockMultipartFile[] {arquivo, segundaImagem});
         assertEquals(StatusChamado.ABERTO, chamado.getStatus());
-        assertArrayEquals(imagem, service.imagem(chamado.getId()).getDados());
+        var idsImagens = service.imagens(chamado.getId());
+        assertEquals(2, idsImagens.size());
+        assertArrayEquals(imagem, service.imagem(chamado.getId(), idsImagens.getFirst()).getDados());
+        assertArrayEquals(new byte[] {4, 5}, service.imagem(chamado.getId(), idsImagens.get(1)).getDados());
 
         service.atualizar(chamado.getId(), StatusChamado.EM_ATENDIMENTO, "Equipe acionada");
         assertEquals(StatusChamado.EM_ATENDIMENTO, service.buscar(chamado.getId()).getStatus());
@@ -42,5 +46,8 @@ class SiteApplicationTests {
 
         assertThrows(ResponseStatusException.class, () -> service.criar("Rua Teste, 10", "Centro",
             TipoProblema.VAZAMENTO, LocalDate.now().minusYears(6), LocalTime.NOON, null));
+        assertThrows(ResponseStatusException.class, () -> service.criar("Rua Teste, 10", "Centro",
+            TipoProblema.VAZAMENTO, LocalDate.now(), LocalTime.NOON,
+            new MockMultipartFile[] {arquivo, arquivo, arquivo, arquivo, arquivo, arquivo}));
     }
 }

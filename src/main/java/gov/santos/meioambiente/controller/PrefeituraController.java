@@ -8,11 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/prefeitura")
 public class PrefeituraController {
+    public record ResumoStatus(StatusChamado status, long total) {}
     private final ChamadoService service;
     public PrefeituraController(ChamadoService service) { this.service = service; }
 
@@ -38,10 +38,9 @@ public class PrefeituraController {
     String relatorios(Model model) {
         var chamados = service.filtrar(new ChamadoFiltroDTO());
         model.addAttribute("total", chamados.size());
-        model.addAttribute("statuses", StatusChamado.values());
-        model.addAttribute("chamados", chamados);
-        model.addAttribute("contagem", Arrays.stream(StatusChamado.values())
-            .collect(Collectors.toMap(s -> s, s -> chamados.stream().filter(c -> c.getStatus() == s).count())));
+        model.addAttribute("resumos", Arrays.stream(StatusChamado.values())
+            .map(s -> new ResumoStatus(s, chamados.stream().filter(c -> c.getStatus() == s).count()))
+            .toList());
         return "prefeitura/relatorios";
     }
 }

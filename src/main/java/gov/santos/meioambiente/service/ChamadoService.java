@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
+import java.util.Arrays;
 
 @Service
 public class ChamadoService {
@@ -33,9 +34,9 @@ public class ChamadoService {
         this.historico = historico;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = IOException.class)
     public Chamado criar(String endereco, String bairro, TipoProblema tipo, LocalDate data,
-                         LocalTime hora, MultipartFile imagem) throws IOException {
+                         LocalTime hora, MultipartFile[] imagens) throws IOException {
         if (endereco == null || endereco.isBlank() || bairro == null || bairro.isBlank()
                 || endereco.length() > 160 || bairro.length() > 80 || tipo == null || data == null
                 || hora == null || data.isBefore(LocalDate.now().minusYears(5))
@@ -43,9 +44,17 @@ public class ChamadoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Preencha endereço, bairro, tipo, data e hora válidos. A ocorrência deve ser dos últimos 5 anos.");
         }
-        if (imagem != null && !imagem.isEmpty()) {
-            if (imagem.getSize() > 5_000_000 || !Set.of("image/jpeg", "image/png", "image/webp").contains(imagem.getContentType())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A imagem deve ser JPEG, PNG ou WebP e ter até 5 MB.");
+        List<MultipartFile> arquivos = imagens == null ? List.of() : Arrays.stream(imagens)
+            .filter(arquivo -> arquivo != null && !arquivo.isEmpty()).toList();
+        if (arquivos.size() > 5) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Envie no máximo 5 imagens.");
+        }
+        Set<String> tiposPermitidos = Set.of("image/jpeg", "image/png", "image/webp");
+        for (MultipartFile arquivo : arquivos) {
+            if (arquivo.getSize() > 5_000_000 || arquivo.getContentType() == null
+                    || !tiposPermitidos.contains(arquivo.getContentType())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Cada imagem deve ser JPEG, PNG ou WebP e ter até 5 MB.");
             }
         }
         Chamado chamado = new Chamado();
@@ -55,7 +64,7 @@ public class ChamadoService {
         chamado.setDataOcorrencia(data);
         chamado.setHoraOcorrencia(hora);
         chamados.save(chamado);
-        if (imagem != null && !imagem.isEmpty()) {
+        for (MultipartFile imagem : arquivos) {
             Anexo anexo = new Anexo();
             anexo.setChamado(chamado);
             anexo.setTipoConteudo(imagem.getContentType());
@@ -111,6 +120,15 @@ public class ChamadoService {
 
     public List<Comentario> comentarios(Long id) { buscar(id); return comentarios.findByChamadoIdOrderByCriadoEmAsc(id); }
     public List<HistoricoChamado> historico(Long id) { buscar(id); return historico.findByChamadoIdOrderByCriadoEmAsc(id); }
-    public Anexo imagem(Long id) { buscar(id); return anexos.findByChamadoId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)); }
-    public boolean temImagem(Long id) { return anexos.findByChamadoId(id).isPresent(); }
+    public List<Long> imagens(Long id) { buscar(id); return anexos.findIdsByChamadoId(id); }
+    public Anexo imagem(Long chamadoId, Long imagemId) {
+        buscar(chamadoId);
+        return anexos.findByIdAndChamadoId(imagemId, chamadoId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Imagem não encontrada."));
+    }
+    public Anexo primeiraImagem(Long chamadoId) {
+        buscar(chamadoId);
+        return anexos.findFirstByChamadoIdOrderByIdAsc(chamadoId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Imagem não encontrada."));
+    }
 }

@@ -26,7 +26,7 @@
         <div class="form-field"><label for="tipo">Tipo de problema</label><select id="tipo" name="tipo" required><option value="">Selecione o problema</option><option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${#strings.replace(tipo.name(), '_', ' ')}"></option></select></div>
         <div class="form-field"><label for="dataOcorrencia">Data da ocorrência</label><input id="dataOcorrencia" name="dataOcorrencia" type="date" th:min="${dataMinima}" th:max="${dataMaxima}" required><small class="field-hint" th:text="|De ${#temporals.format(dataMinima, 'dd/MM/yyyy')} até ${#temporals.format(dataMaxima, 'dd/MM/yyyy')}|">Últimos cinco anos</small></div>
         <div class="form-field"><label for="horaOcorrencia">Hora da ocorrência</label><input id="horaOcorrencia" name="horaOcorrencia" type="time" required></div>
-        <div class="form-field span-all"><label for="imagem">Imagem da ocorrência <span class="muted">(opcional)</span></label><input id="imagem" name="imagem" type="file" accept="image/jpeg,image/png,image/webp"><small class="field-hint">JPEG, PNG ou WebP de até 5 MB.</small></div>
+        <div class="form-field span-all"><label for="imagens">Imagens da ocorrência <span class="muted">(opcional)</span></label><input id="imagens" name="imagens" type="file" accept="image/jpeg,image/png,image/webp" multiple><small class="field-hint">Selecione até 5 imagens JPEG, PNG ou WebP, de até 5 MB cada.</small></div>
       </div>
       <div class="form-actions"><button class="button" type="submit">Registrar chamado</button></div>
     </form>

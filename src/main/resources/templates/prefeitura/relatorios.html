@@ -14,7 +14,7 @@
   <main>
     <div class="page-heading page-heading-row"><div><p class="eyebrow">Prefeitura de Santos · Meio Ambiente</p><h1>Resumo de atendimentos</h1><p class="lead">Distribuição dos chamados conforme o status informado pela Sabesp.</p></div><a class="button-secondary" th:href="@{/prefeitura/chamados}">Explorar chamados →</a></div>
     <section class="panel"><div class="panel-header"><h2>Panorama geral</h2></div><p class="report-total"><span>Total de chamados registrados</span><strong th:text="${total}">0</strong></p></section>
-    <div class="stat-grid four"><section class="stat-card" th:each="s : ${statuses}"><span th:text="${#strings.replace(s.name(), '_', ' ')}">Status</span><strong th:text="${contagem[s]}">0</strong></section></div>
+    <div class="stat-grid four"><section class="stat-card" th:each="resumo : ${resumos}"><span th:text="${#strings.replace(resumo.status.name(), '_', ' ')}">Status</span><strong th:text="${resumo.total}">0</strong></section></div>
     <div class="info-strip">Os números são atualizados conforme os chamados são registrados e atendidos.</div>
   </main>
   <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
