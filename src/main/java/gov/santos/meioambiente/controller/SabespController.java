@@ -6,6 +6,7 @@ import gov.santos.meioambiente.service.ChamadoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/sabesp")
@@ -31,8 +32,9 @@ public class SabespController {
 
     @PostMapping("/{id}")
     String atualizar(@PathVariable Long id, @RequestParam StatusChamado status,
-                     @RequestParam(required = false) String comentario) {
+                     @RequestParam(required = false) String comentario, RedirectAttributes redirect) {
         service.atualizar(id, status, comentario);
+        redirect.addFlashAttribute("sucesso", "Atualização salva e disponível para o cidadão.");
         return "redirect:/sabesp/" + id;
     }
 }

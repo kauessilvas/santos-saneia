@@ -25,6 +25,8 @@ Credenciais de demonstração: `sabesp` / `sabesp123` e `prefeitura` / `prefeitu
 
 Imagens aceitas: até cinco arquivos JPEG, PNG ou WebP, com até 5 MB cada. Na página do chamado, as imagens aparecem em uma galeria e podem ser abertas em tamanho completo. O número do chamado e o link de acompanhamento são mostrados após o cadastro. Os dados enviados são gravados no H2 local.
 
+O formulário mostra mensagens junto aos campos inválidos e uma prévia das imagens selecionadas. A Sabesp recebe confirmação ao salvar uma atualização; os filtros da Prefeitura sinalizam períodos inválidos.
+
 A data da ocorrência usa o seletor nativo do navegador. O cadastro aceita datas dos últimos cinco anos até a data atual; o mesmo limite é validado no servidor.
 
 ## Rotas principais

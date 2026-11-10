@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Registrar chamado | Santos</title>
   <link rel="stylesheet" th:href="@{/css/site.css}">
+  <script defer th:src="@{/js/upload-preview.js}"></script>
 </head>
 <body>
   <header class="site-header"><div class="header-inner">
@@ -17,18 +18,20 @@
       <h1>Informar problema de esgoto</h1>
       <p class="lead">Ajude a identificar ocorrências em Santos. Preencha os dados abaixo e acompanhe o atendimento pelo número do chamado.</p>
     </div>
-    <form class="panel" th:action="@{/cidadao/chamados}" method="post" enctype="multipart/form-data">
+    <form class="panel" th:action="@{/cidadao/chamados}" th:object="${formulario}" method="post" enctype="multipart/form-data">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-      <div class="panel-header"><h2>Dados da ocorrência</h2><p class="panel-note">Campos obrigatórios</p></div>
+      <div class="panel-header"><h2>Dados da ocorrência</h2><p class="panel-note">Todos os campos são obrigatórios, exceto as imagens.</p></div>
+      <p class="notice-error" th:if="${erro}" th:text="${erro}" role="alert"></p>
+      <p class="notice-error" th:if="${#fields.hasErrors('*')}" role="alert">Revise os campos destacados antes de continuar.</p>
       <div class="form-grid">
-        <div class="form-field span-all"><label for="endereco">Endereço completo em Santos</label><input id="endereco" name="endereco" maxlength="160" required placeholder="Rua, número e complemento"></div>
-        <div class="form-field"><label for="bairro">Bairro</label><input id="bairro" name="bairro" maxlength="80" required placeholder="Ex.: Gonzaga"></div>
-        <div class="form-field"><label for="tipo">Tipo de problema</label><select id="tipo" name="tipo" required><option value="">Selecione o problema</option><option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${#strings.replace(tipo.name(), '_', ' ')}"></option></select></div>
-        <div class="form-field"><label for="dataOcorrencia">Data da ocorrência</label><input id="dataOcorrencia" name="dataOcorrencia" type="date" th:min="${dataMinima}" th:max="${dataMaxima}" required><small class="field-hint" th:text="|De ${#temporals.format(dataMinima, 'dd/MM/yyyy')} até ${#temporals.format(dataMaxima, 'dd/MM/yyyy')}|">Últimos cinco anos</small></div>
-        <div class="form-field"><label for="horaOcorrencia">Hora da ocorrência</label><input id="horaOcorrencia" name="horaOcorrencia" type="time" required></div>
-        <div class="form-field span-all"><label for="imagens">Imagens da ocorrência <span class="muted">(opcional)</span></label><input id="imagens" name="imagens" type="file" accept="image/jpeg,image/png,image/webp" multiple><small class="field-hint">Selecione até 5 imagens JPEG, PNG ou WebP, de até 5 MB cada.</small></div>
+        <div class="form-field span-all"><label for="endereco">Endereço completo em Santos</label><input id="endereco" th:field="*{endereco}" th:errorclass="is-invalid" aria-describedby="enderecoErro" maxlength="160" required placeholder="Rua, número e complemento"><small id="enderecoErro" class="field-error" th:if="${#fields.hasErrors('endereco')}" th:errors="*{endereco}"></small></div>
+        <div class="form-field"><label for="bairro">Bairro</label><input id="bairro" th:field="*{bairro}" th:errorclass="is-invalid" aria-describedby="bairroErro" maxlength="80" required placeholder="Ex.: Gonzaga"><small id="bairroErro" class="field-error" th:if="${#fields.hasErrors('bairro')}" th:errors="*{bairro}"></small></div>
+        <div class="form-field"><label for="tipo">Tipo de problema</label><select id="tipo" th:field="*{tipo}" th:errorclass="is-invalid" aria-describedby="tipoErro" required><option value="">Selecione o problema</option><option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.rotulo}"></option></select><small id="tipoErro" class="field-error" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></small></div>
+        <div class="form-field"><label for="dataOcorrencia">Data da ocorrência</label><input id="dataOcorrencia" th:field="*{dataOcorrencia}" th:errorclass="is-invalid" aria-describedby="dataAjuda dataErro" type="date" th:min="${dataMinima}" th:max="${dataMaxima}" required><small id="dataAjuda" class="field-hint" th:text="|De ${#temporals.format(dataMinima, 'dd/MM/yyyy')} até ${#temporals.format(dataMaxima, 'dd/MM/yyyy')}|">Últimos cinco anos</small><small id="dataErro" class="field-error" th:if="${#fields.hasErrors('dataOcorrencia')}" th:errors="*{dataOcorrencia}"></small></div>
+        <div class="form-field"><label for="horaOcorrencia">Hora da ocorrência</label><input id="horaOcorrencia" th:field="*{horaOcorrencia}" th:errorclass="is-invalid" aria-describedby="horaErro" type="time" required><small id="horaErro" class="field-error" th:if="${#fields.hasErrors('horaOcorrencia')}" th:errors="*{horaOcorrencia}"></small></div>
+        <div class="form-field span-all"><label for="imagens">Imagens da ocorrência <span class="muted">(opcional)</span></label><input id="imagens" name="imagens" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="imagensAjuda imagensFeedback" multiple><small id="imagensAjuda" class="field-hint">Selecione até 5 imagens JPEG, PNG ou WebP, de até 5 MB cada.</small><div id="imagensFeedback" class="upload-feedback" aria-live="polite"></div><div id="imagemPreviews" class="upload-previews"></div></div>
       </div>
-      <div class="form-actions"><button class="button" type="submit">Registrar chamado</button></div>
+      <div class="form-actions"><button class="button" type="submit">Registrar chamado</button><span class="form-help">O número do chamado será mostrado após o envio.</span></div>
     </form>
     <div class="info-strip">Após o registro, guarde o número e o link do chamado para acompanhar as atualizações.</div>
   </main>

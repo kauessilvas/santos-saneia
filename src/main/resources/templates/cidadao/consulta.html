@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Acompanhar chamado | Santos</title>
   <link rel="stylesheet" th:href="@{/css/site.css}">
+  <script defer th:src="@{/js/copy-link.js}"></script>
 </head>
 <body>
   <header class="site-header"><div class="header-inner">
@@ -14,21 +15,22 @@
   <main>
     <div class="page-heading page-heading-row">
       <div><p class="eyebrow">Acompanhamento</p><h1 th:text="|Chamado #${chamado.id}|">Chamado</h1><p class="lead">Veja os dados registrados e as atualizações do atendimento.</p></div>
-      <span class="badge" th:classappend="${'status-' + #strings.toLowerCase(chamado.status.name())}" th:text="${#strings.replace(chamado.status.name(), '_', ' ')}">Status</span>
+      <span class="badge" th:classappend="${'status-' + #strings.toLowerCase(chamado.status.name())}" th:text="${chamado.status.rotulo}">Status</span>
     </div>
+    <p class="notice-success" th:if="${param.criado}" role="status" th:text="|Chamado #${chamado.id} registrado com sucesso. Guarde o link desta página para acompanhar o atendimento.|">Chamado registrado.</p>
     <section class="panel"><div class="panel-header"><h2>Dados da ocorrência</h2></div>
       <dl class="detail-grid">
         <div class="detail-item full"><dt>Endereço</dt><dd th:text="|${chamado.endereco}, ${chamado.bairro}|"></dd></div>
-        <div class="detail-item"><dt>Tipo de problema</dt><dd th:text="${#strings.replace(chamado.tipo.name(), '_', ' ')}"></dd></div>
+        <div class="detail-item"><dt>Tipo de problema</dt><dd th:text="${chamado.tipo.rotulo}"></dd></div>
         <div class="detail-item"><dt>Data e hora</dt><dd th:text="|${#temporals.format(chamado.dataOcorrencia, 'dd/MM/yyyy')} às ${#temporals.format(chamado.horaOcorrencia, 'HH:mm')}|"></dd></div>
       </dl>
       <div class="image-section" th:if="${!#lists.isEmpty(imagens)}"><h3>Imagens da ocorrência</h3><div class="image-gallery">
         <figure class="image-tile" th:each="imagemId, indice : ${imagens}"><a th:href="@{/chamados/{id}/imagens/{imagemId}(id=${chamado.id},imagemId=${imagemId})}" target="_blank" rel="noopener" th:aria-label="|Abrir imagem ${indice.count} em tamanho completo|"><img th:src="@{/chamados/{id}/imagens/{imagemId}(id=${chamado.id},imagemId=${imagemId})}" th:alt="|Imagem ${indice.count} enviada no chamado|" loading="lazy"><span>Ver imagem completa ↗</span></a><figcaption th:text="|Imagem ${indice.count}|"></figcaption></figure>
       </div></div>
     </section>
-    <div class="split"><section class="panel"><h2>Andamento</h2><ol class="timeline"><li th:each="item : ${historico}" th:text="|${#temporals.format(item.criadoEm, 'dd/MM/yyyy HH:mm')} · ${#strings.replace(item.status.name(), '_', ' ')}|"></li></ol></section>
+    <div class="split"><section class="panel"><h2>Andamento</h2><ol class="timeline"><li th:each="item : ${historico}" th:text="|${#temporals.format(item.criadoEm, 'dd/MM/yyyy HH:mm')} · ${item.status.rotulo}|"></li></ol></section>
       <section class="panel"><h2>Comentários da Sabesp</h2><p class="muted" th:if="${#lists.isEmpty(comentarios)}">Ainda não há comentários.</p><article class="comment" th:each="item : ${comentarios}"><time th:text="${#temporals.format(item.criadoEm, 'dd/MM/yyyy HH:mm')}"></time><p th:text="${item.texto}"></p></article></section></div>
-    <a class="button-secondary" th:href="@{/cidadao/cadastro}">Registrar outro chamado</a>
+    <div class="form-actions"><button class="button-secondary" id="copiarLink" type="button">Copiar link de acompanhamento</button><a class="button-secondary" th:href="@{/cidadao/cadastro}">Registrar outro chamado</a><span id="linkFeedback" class="form-help" role="status" aria-live="polite"></span></div>
   </main>
   <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
 </body>

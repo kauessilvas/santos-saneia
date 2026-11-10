@@ -7,6 +7,7 @@ import gov.santos.meioambiente.service.ChamadoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
 import java.util.Arrays;
 
 @Controller
@@ -27,8 +28,16 @@ public class PrefeituraController {
     }
 
     @GetMapping("/chamados")
-    String chamados(@ModelAttribute ChamadoFiltroDTO filtro, Model model) {
-        model.addAttribute("chamados", service.filtrar(filtro));
+    String chamados(@ModelAttribute ChamadoFiltroDTO filtro, BindingResult validacao, Model model) {
+        if (validacao.hasErrors()) {
+            model.addAttribute("erroFiltro", "Informe datas válidas para filtrar os chamados.");
+            model.addAttribute("chamados", java.util.List.of());
+        } else if (filtro.getInicio() != null && filtro.getFim() != null && filtro.getInicio().isAfter(filtro.getFim())) {
+            model.addAttribute("erroFiltro", "A data inicial deve ser anterior ou igual à data final.");
+            model.addAttribute("chamados", java.util.List.of());
+        } else {
+            model.addAttribute("chamados", service.filtrar(filtro));
+        }
         model.addAttribute("statuses", StatusChamado.values());
         model.addAttribute("tipos", TipoProblema.values());
         return "prefeitura/chamados";

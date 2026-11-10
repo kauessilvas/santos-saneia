@@ -1,5 +1,13 @@
 package gov.santos.meioambiente.enums;
 
 public enum TipoProblema {
-    VAZAMENTO, EXTRAVASAMENTO, ESGOTO_A_CEU_ABERTO, MAU_CHEIRO, OUTRO
+    VAZAMENTO("Vazamento"),
+    EXTRAVASAMENTO("Extravasamento"),
+    ESGOTO_A_CEU_ABERTO("Esgoto a céu aberto"),
+    MAU_CHEIRO("Mau cheiro"),
+    OUTRO("Outro");
+
+    private final String rotulo;
+    TipoProblema(String rotulo) { this.rotulo = rotulo; }
+    public String getRotulo() { return rotulo; }
 }
