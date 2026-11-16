@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Criar cadastro | Santos Saneia</title><link rel="stylesheet" th:href="@{/css/site.css}"></head>
+<body>
+<header class="site-header"><div class="header-inner"><a class="brand" th:href="@{/cadastro}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Santos Saneia</strong><small>Cadastro do cidadão</small></span></a><nav aria-label="Navegação principal"><a th:href="@{/login}">Já tenho cadastro</a></nav></div></header>
+<main class="login-layout">
+  <div class="page-heading"><p class="eyebrow">Criar cadastro · etapa 1 de 2</p><h1>Seus dados</h1><p class="lead">Precisamos destes dados para identificar quem abriu a ocorrência.</p></div>
+  <div class="stepper" aria-label="Etapas do cadastro"><span class="active">1. Dados pessoais</span><span>2. Acesso e endereço</span></div>
+  <form class="panel" th:action="@{/cadastro/etapa-1}" th:object="${cadastro}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <p class="notice-error" th:if="${#fields.hasErrors('*')}" role="alert">Revise os campos destacados antes de continuar.</p>
+    <div class="form-field"><label for="nome">Nome completo</label><input id="nome" th:field="*{nome}" th:errorclass="is-invalid" autocomplete="name" required><small class="field-error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></small></div>
+    <div class="form-field form-gap"><label for="email">E-mail</label><input id="email" th:field="*{email}" th:errorclass="is-invalid" type="email" autocomplete="email" required><small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small></div>
+    <div class="form-field form-gap"><label for="dataNascimento">Data de nascimento</label><input id="dataNascimento" th:field="*{dataNascimento}" th:errorclass="is-invalid" type="date" required><small class="field-hint">É necessário ter pelo menos 18 anos.</small><small class="field-error" th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}"></small></div>
+    <div class="form-actions"><button class="button" type="submit">Continuar</button></div>
+  </form>
+</main><footer class="page-footer">Seus dados são usados para identificar e acompanhar seus chamados.</footer>
+</body></html>

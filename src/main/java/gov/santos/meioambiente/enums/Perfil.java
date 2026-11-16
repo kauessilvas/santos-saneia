@@ -1,5 +1,5 @@
 package gov.santos.meioambiente.enums;
 
 public enum Perfil {
-    SABESP, PREFEITURA
+    CIDADAO, SABESP, PREFEITURA
 }

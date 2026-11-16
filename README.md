@@ -17,11 +17,11 @@ Abra `http://localhost:8080`. O banco H2 é persistido na pasta `data/`, ignorad
 
 | Perfil | Acesso | Funções |
 | --- | --- | --- |
-| Cidadão | Público | Registra endereço, bairro, tipo, data, hora e até cinco imagens opcionais; acompanha o chamado pelo número e endereço da página. |
+| Cidadão | Cadastro e login | Cria uma conta em duas etapas, informa seus dados, registra endereço, bairro, tipo, data, hora e até cinco imagens; acompanha o chamado pelo número e endereço da página. |
 | Sabesp | `/login` | Visualiza chamados, muda o status e publica comentários. |
 | Prefeitura | `/login` | Consulta painel e relatório; filtra por status, tipo, bairro e período da ocorrência. |
 
-Credenciais de demonstração: `sabesp` / `sabesp123` e `prefeitura` / `prefeitura123`. Antes de disponibilizar o sistema, configure senhas próprias pelas variáveis de ambiente `APP_SABESP_PASSWORD` e `APP_PREFEITURA_PASSWORD`.
+Os usuários administrativos de demonstração são criados automaticamente no primeiro início: `sabesp` / `sabesp123` e `prefeitura` / `prefeitura123`. Eles usam a mesma tela de login e não possuem cadastro público. Antes de disponibilizar o sistema, configure senhas próprias pelas variáveis de ambiente `APP_SABESP_PASSWORD` e `APP_PREFEITURA_PASSWORD`.
 
 Imagens aceitas: até cinco arquivos JPEG, PNG ou WebP, com até 5 MB cada. Na página do chamado, as imagens aparecem em uma galeria e podem ser abertas em tamanho completo. O número do chamado e o link de acompanhamento são mostrados após o cadastro. Os dados enviados são gravados no H2 local.
 
@@ -31,6 +31,7 @@ A data da ocorrência usa o seletor nativo do navegador. O cadastro aceita datas
 
 ## Rotas principais
 
+- `GET /cadastro` e `POST /cadastro/etapa-1`, `/cadastro/etapa-2`: cadastro do cidadão em duas etapas.
 - `GET /cidadao/cadastro` e `POST /cidadao/chamados`: formulário e registro.
 - `GET /cidadao/consulta/{id}`: acompanhamento público.
 - `GET /chamados/{id}/imagens/{imagemId}`: imagem de um chamado em tamanho completo.

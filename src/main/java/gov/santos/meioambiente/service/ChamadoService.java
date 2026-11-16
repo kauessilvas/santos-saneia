@@ -36,7 +36,7 @@ public class ChamadoService {
 
     @Transactional(rollbackFor = IOException.class)
     public Chamado criar(String endereco, String bairro, TipoProblema tipo, LocalDate data,
-                         LocalTime hora, MultipartFile[] imagens) throws IOException {
+                         LocalTime hora, MultipartFile[] imagens, Usuario usuario) throws IOException {
         if (endereco == null || endereco.isBlank() || bairro == null || bairro.isBlank()
                 || endereco.length() > 160 || bairro.length() > 80 || tipo == null || data == null
                 || hora == null || data.isBefore(LocalDate.now().minusYears(5))
@@ -58,6 +58,7 @@ public class ChamadoService {
             }
         }
         Chamado chamado = new Chamado();
+        chamado.setUsuario(usuario);
         chamado.setEndereco(endereco.trim());
         chamado.setBairro(bairro.trim());
         chamado.setTipo(tipo);

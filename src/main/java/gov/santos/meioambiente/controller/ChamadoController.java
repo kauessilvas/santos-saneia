@@ -13,14 +13,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.time.LocalDate;
+import org.springframework.security.core.Authentication;
+import gov.santos.meioambiente.service.UsuarioService;
 
 @Controller
 public class ChamadoController {
     private final ChamadoService service;
-    public ChamadoController(ChamadoService service) { this.service = service; }
+    private final UsuarioService usuarios;
+    public ChamadoController(ChamadoService service, UsuarioService usuarios) { this.service = service; this.usuarios = usuarios; }
 
     @GetMapping("/cidadao/cadastro")
-    String cadastro(Model model) {
+    String cadastro(Authentication auth, Model model) {
+        if (auth == null || !auth.isAuthenticated() || auth.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_CIDADAO"))) {
+            return "redirect:/login?continue=/cidadao/cadastro";
+        }
         model.addAttribute("formulario", new NovoChamadoDTO());
         return prepararCadastro(model);
     }
@@ -34,11 +40,11 @@ public class ChamadoController {
 
     @PostMapping("/cidadao/chamados")
     String criar(@Valid @ModelAttribute("formulario") NovoChamadoDTO formulario, BindingResult validacao,
-                 @RequestParam(required = false) MultipartFile[] imagens, Model model) throws IOException {
+                 @RequestParam(required = false) MultipartFile[] imagens, Authentication auth, Model model) throws IOException {
         if (validacao.hasErrors()) return prepararCadastro(model);
         try {
             var chamado = service.criar(formulario.getEndereco(), formulario.getBairro(), formulario.getTipo(),
-                formulario.getDataOcorrencia(), formulario.getHoraOcorrencia(), imagens);
+                formulario.getDataOcorrencia(), formulario.getHoraOcorrencia(), imagens, usuarios.buscarPorLogin(auth.getName()));
             return "redirect:/cidadao/consulta/" + chamado.getId() + "?criado=1";
         } catch (ResponseStatusException erro) {
             model.addAttribute("erro", erro.getReason());

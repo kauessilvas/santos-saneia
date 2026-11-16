@@ -14,6 +14,9 @@ import java.time.LocalTime;
 public class Chamado {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = true)
+    private Usuario usuario;
     @Column(nullable = false, length = 160)
     private String endereco;
     @Column(nullable = false, length = 80)

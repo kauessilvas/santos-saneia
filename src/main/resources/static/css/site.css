@@ -235,6 +235,10 @@ td:last-child, th:last-child { padding-right: 1rem; }
 .login-layout { max-width: 500px; margin: 2.5rem auto 0; }
 .login-layout .panel { padding: 2rem; }
 .error-layout { max-width: 680px; }
+.stepper { display: flex; gap: .55rem; margin: 0 0 1.25rem; color: #71858a; font-size: .78rem; font-weight: 800; }
+.stepper span { flex: 1; padding: .65rem .75rem; border-bottom: 3px solid #dce8e3; }
+.stepper span.active { border-color: #168778; color: #086b69; }
+.form-gap { margin-top: 1rem; }
 .page-footer { padding: 1.5rem 1rem 2.5rem; color: #708389; font-size: .8rem; text-align: center; }
 
 @media (max-width: 760px) {

@@ -3,26 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Acesso institucional | Santos</title>
+  <title>Entrar | Santos Saneia</title>
   <link rel="stylesheet" th:href="@{/css/site.css}">
 </head>
 <body>
   <header class="site-header"><div class="header-inner">
-      <a class="brand" th:href="@{/cidadao/cadastro}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Secretaria de Meio Ambiente</strong><small>Prefeitura de Santos</small></span></a>
-      <nav aria-label="Navegação principal"><a th:href="@{/cidadao/cadastro}">Novo chamado</a><a th:href="@{/login}" aria-current="page" class="nav-action">Acesso institucional</a></nav>
+      <a class="brand" th:href="@{/cadastro}"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><strong>Santos Saneia</strong><small>Atendimento de esgoto</small></span></a>
+      <nav aria-label="Navegação principal"><a th:href="@{/cadastro}">Criar cadastro</a><a th:href="@{/login}" aria-current="page" class="nav-action">Entrar</a></nav>
     </div></header>
   <main>
     <div class="login-layout">
-      <div class="page-heading"><p class="eyebrow">Área institucional</p><h1>Bem-vindo de volta</h1><p class="lead">Acesse os chamados com seu perfil da Sabesp ou da Prefeitura.</p></div>
+      <div class="page-heading"><p class="eyebrow">Acesso ao Santos Saneia</p><h1>Entrar</h1><p class="lead">Use seu e-mail ou usuário e senha para continuar.</p></div>
       <form class="panel" th:action="@{/login}" method="post">
         <p class="notice-error" th:if="${param.error}" role="alert">Usuário ou senha inválidos.</p>
         <p class="info-strip" th:if="${param.logout}">Sessão encerrada.</p>
+        <p class="notice-success" th:if="${param.cadastrado}" role="status">Cadastro concluído. Agora você já pode entrar.</p>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        <div class="form-field"><label for="username">Usuário</label><input id="username" name="username" autocomplete="username" required></div>
+        <div class="form-field"><label for="username">E-mail ou usuário</label><input id="username" name="username" autocomplete="username" required></div>
         <div class="form-field" style="margin-top:1rem"><label for="password">Senha</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
         <div class="form-actions"><button class="button" type="submit">Entrar</button></div>
       </form>
-      <p class="muted">Precisa registrar uma ocorrência? <a th:href="@{/cidadao/cadastro}">Acesse o formulário público</a>.</p>
+      <p class="muted">Ainda não possui cadastro? <a th:href="@{/cadastro}">Crie sua conta em dois passos</a>.</p>
     </div>
   </main>
   <footer class="page-footer">Secretaria de Meio Ambiente de Santos · Chamados de esgoto</footer>
