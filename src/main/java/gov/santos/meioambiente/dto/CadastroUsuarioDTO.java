@@ -18,10 +18,8 @@ public class CadastroUsuarioDTO {
     @NotNull(message = "Informe sua data de nascimento.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataNascimento;
-    @NotBlank(message = "Informe seu CEP.")
     @Pattern(regexp = "\\d{5}-?\\d{3}", message = "Informe um CEP válido.")
     private String cep;
-    @NotBlank(message = "Informe o número da residência.")
     @Size(max = 20, message = "O número deve ter até 20 caracteres.")
     private String numeroResidencia;
     @Size(min = 8, max = 72, message = "A senha deve ter entre 8 e 72 caracteres.")

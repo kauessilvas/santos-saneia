@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import java.io.IOException;
 import java.time.LocalDate;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,12 @@ public class ChamadoController {
     private final ChamadoService service;
     private final UsuarioService usuarios;
     public ChamadoController(ChamadoService service, UsuarioService usuarios) { this.service = service; this.usuarios = usuarios; }
+
+    /** Evita rejeitar dados válidos apenas por espaços no início/fim. */
+    @InitBinder("formulario")
+    void normalizarCampos(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
     @GetMapping("/cidadao/cadastro")
     String cadastro(Authentication auth, Model model) {

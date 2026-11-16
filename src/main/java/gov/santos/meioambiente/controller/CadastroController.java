@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
@@ -20,6 +23,12 @@ public class CadastroController {
 
     @ModelAttribute("cadastro")
     CadastroUsuarioDTO formulario() { return new CadastroUsuarioDTO(); }
+
+    /** Remove espaços acidentais antes de o Bean Validation verificar os campos. */
+    @InitBinder("cadastro")
+    void normalizarCampos(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
     @GetMapping("/cadastro")
     String etapaUm(Model model) {
